@@ -1,0 +1,185 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Jikji Mastery Quiz</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: linear-gradient(to right, #fceabb, #f8b500);
+            padding: 40px;
+            text-align: center;
+            color: #333;
+        }
+        .quiz-box {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            display: inline-block;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            width: 90%;
+            max-width: 700px;
+        }
+        h2 {
+            color: #e67e22;
+        }
+        button {
+            padding: 12px 20px;
+            margin: 10px;
+            font-size: 16px;
+            border: none;
+            border-radius: 8px;
+            background-color: #f39c12;
+            color: white;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #d35400;
+        }
+        .result {
+            margin-top: 20px;
+            font-weight: bold;
+            font-size: 18px;
+            color: #2c3e50;
+        }
+        .hidden {
+            display: none;
+        }
+        #choices button {
+            display: block;
+            width: 100%;
+            max-width: 400px;
+            margin: 10px auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="quiz-box">
+        <h2 id="question-title">Jikji Quiz Challenge</h2>
+        <p id="question-text">Click start to test your Jikji knowledge!</p>
+        <div id="choices"></div>
+        <button onclick="nextQuestion()" id="next-btn" class="hidden">Next</button>
+        <button onclick="startQuiz()" id="start-btn">Start Quiz</button>
+        <p class="result" id="score-text"></p>
+    </div>
+    <script>
+        const questions = [
+            {
+                q: "What is 'Jikji'?",
+                choices: ["A traditional Korean drink", "A sword from the Joseon dynasty", "The world's oldest metal-printed book", "An ancient Korean festival"],
+                answer: 2
+            },
+            {
+                q: "When was 'Jikji' printed?",
+                choices: ["1776", "1455", "1377", "1010"],
+                answer: 2
+            },
+            {
+                q: "Where was 'Jikji' printed?",
+                choices: ["Gyeongju", "Gaeseong", "Cheongju", "Seoul"],
+                answer: 2
+            },
+            {
+                q: "What was the purpose of 'Jikji'?",
+                choices: ["To teach martial arts", "To promote Korean culture", "To spread Buddhist teachings", "To showcase printing technology"],
+                answer: 2
+            },
+            {
+                q: "Which dynasty printed 'Jikji'?",
+                choices: ["Joseon", "Goryeo", "Silla", "Baekje"],
+                answer: 1
+            },
+            {
+                q: "Which museum currently holds the last surviving copy of 'Jikji'?",
+                choices: ["British Museum", "Library of Congress", "National Museum of Korea", "National Library of France"],
+                answer: 3
+            },
+            {
+                q: "What material was used to print 'Jikji'?",
+                choices: ["Woodblock", "Bronze movable type", "Stone tablet", "Ink on cloth"],
+                answer: 1
+            },
+            {
+                q: "Which invention is 'Jikji' older than?",
+                choices: ["The compass", "Paper", "Gutenberg Bible", "Printing press"],
+                answer: 2
+            }
+        ];
+
+        let current = 0;
+        let score = 0;
+
+        function startQuiz() {
+            current = 0;
+            score = 0;
+            document.getElementById("start-btn").classList.add("hidden");
+            document.getElementById("score-text").textContent = "";
+            showQuestion();
+        }
+
+        function showQuestion() {
+            const q = questions[current];
+            document.getElementById("question-title").textContent = "Question " + (current + 1);
+            document.getElementById("question-text").textContent = q.q;
+            const choicesDiv = document.getElementById("choices");
+            choicesDiv.innerHTML = "";
+            q.choices.forEach((choice, index) => {
+                const btn = document.createElement("button");
+                btn.textContent = choice;
+                btn.onclick = () => checkAnswer(index);
+                choicesDiv.appendChild(btn);
+            });
+        }
+
+        function checkAnswer(selected) {
+            if (selected === questions[current].answer) score++;
+            document.getElementById("next-btn").classList.remove("hidden");
+            const buttons = document.querySelectorAll("#choices button");
+            buttons.forEach(btn => btn.disabled = true);
+        }
+
+        function nextQuestion() {
+            current++;
+            document.getElementById("next-btn").classList.add("hidden");
+            if (current < questions.length) {
+                showQuestion();
+            } else {
+                endQuiz();
+            }
+        }
+
+        function endQuiz() {
+            document.getElementById("question-title").textContent = "Quiz Completed!";
+            document.getElementById("question-text").textContent = "";
+            document.getElementById("choices").innerHTML = "";
+
+            const percentiles = [
+                "Bottom 12.5%", "Bottom 25%", "Bottom 37.5%", "Bottom 50%",
+                "Top 50%", "Top 37.5%", "Top 25%", "Top 12.5%"
+            ];
+
+            let resultText = "";
+            if (score === 8) {
+                resultText = "🎉 You are a Jikji Master! Incredible!";
+            } else {
+                resultText = `You got ${score} out of 8 right. You're in the ${percentiles[score]}. `;
+                resultText += [
+                    "Ever heard of Jikji before? 😅 Try again!",
+                    "Hmm... You can do better!",
+                    "Close... but not quite! Give it another shot!",
+                    "Not bad, but you can improve!",
+                    "You're halfway there. Keep going!",
+                    "You're getting good! Try again for perfection!",
+                    "Almost there! Just a few more!",
+                    "So close! One more try for glory!"
+                ][score];
+            }
+
+            document.getElementById("score-text").textContent = resultText;
+            document.getElementById("start-btn").textContent = "Try Again";
+            document.getElementById("start-btn").classList.remove("hidden");
+        }
+    </script>
+</body>
+</html>
